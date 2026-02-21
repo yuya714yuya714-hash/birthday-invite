@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>〇〇への招待状</title>
+<style>
+body{
+  font-family:sans-serif;
+  background:#111;
+  color:white;
+  text-align:center;
+  padding:40px 20px;
+}
+.hidden{display:none;}
+input{padding:8px;margin-top:10px;}
+button{padding:8px 20px;margin-top:15px;}
+</style>
+</head>
+<body>
+
+<h1>〇〇への招待状</h1>
+
+<!-- 合言葉画面 -->
+<div id="passwordBox">
+<p>この招待状には、合言葉が必要です。</p>
+<input id="passwordInput" placeholder="合言葉を入力">
+<br>
+<button onclick="checkPassword()">開く</button>
+</div>
+
+<!-- 謎解き本編 -->
+<div id="mainContent" class="hidden">
+
+<p>三つの鍵を集めよ。</p>
+<button onclick="showQ1()">はじめる</button>
+
+<div id="q1" class="hidden">
+<h2>Q1</h2>
+<p>氷 ⇒ 〇 ⇒ 蒸気</p>
+<input id="a1">
+<button onclick="checkQ1()">答える</button>
+</div>
+
+<div id="q2" class="hidden">
+<h2>Q2</h2>
+<p>イラストに共通する力は？</p>
+<input id="a2">
+<button onclick="checkQ2()">答える</button>
+</div>
+
+<div id="q3" class="hidden">
+<h2>Q3</h2>
+<p>目に見えないが物を動かすものは？</p>
+<input id="a3">
+<button onclick="checkQ3()">答える</button>
+</div>
+
+<div id="final" class="hidden">
+<h2>最終問題</h2>
+<p>
+三つの鍵は揃った。<br><br>
+招待状が示す場所では、<br>
+それらを順に体験することになる。<br><br>
+三つの力を、<br>
+あなたが体験したい順に並び替えてください。
+</p>
+<input id="finalAnswer">
+<button onclick="checkFinal()">答える</button>
+</div>
+
+</div>
+
+<script>
+function checkPassword(){
+  const password = document.getElementById("passwordInput").value;
+  if(password === "20250916"){   // ←ここが合言葉
+    document.getElementById("passwordBox").classList.add("hidden");
+    document.getElementById("mainContent").classList.remove("hidden");
+  } else {
+    alert("合言葉が違います");
+  }
+}
+
+let keys = {};
+
+function showQ1(){
+  document.querySelector("#mainContent button").classList.add("hidden");
+  document.getElementById("q1").classList.remove("hidden");
+}
+
+function checkQ1(){
+  if(document.getElementById("a1").value === "みず"){
+    document.getElementById("q1").classList.add("hidden");
+    document.getElementById("q2").classList.remove("hidden");
+  } else alert("ちがいます");
+}
+
+function checkQ2(){
+  if(document.getElementById("a2").value === "ねつ"){
+    document.getElementById("q2").classList.add("hidden");
+    document.getElementById("q3").classList.remove("hidden");
+  } else alert("ちがいます");
+}
+
+function checkQ3(){
+  if(document.getElementById("a3").value === "かぜ"){
+    document.getElementById("q3").classList.add("hidden");
+    document.getElementById("final").classList.remove("hidden");
+  } else alert("ちがいます");
+}
+
+function checkFinal(){
+  if(document.getElementById("finalAnswer").value === "ねつみずかぜ"){
+    window.location.href = "https://宿泊先のURL";
+  } else alert("順番をもう一度考えてみてください");
+}
+</script>
+
+</body>
+</html>
