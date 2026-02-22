@@ -101,7 +101,7 @@ button:hover{opacity:0.8;}
 
 <body>
 
-<h1>とある未来への招待状</h1>
+<h1 id="mainTitle">とある未来への招待状</h1>
 
 <!-- 合言葉 -->
 <div id="passwordBox" class="section active">
@@ -127,7 +127,6 @@ button:hover{opacity:0.8;}
 <div id="q1" class="section">
 <h2>Q1</h2>
 <p>
-形を変えながら、姿を保ち続けるものがある。<br><br>
 氷 ⇒ 〇 ⇒ 蒸気<br><br>
 空欄に入るものをひらがなで答えよ。
 </p>
@@ -204,6 +203,7 @@ function showKey(text, nextSection){
 function checkPassword(){
   const password = document.getElementById("passwordInput").value;
   if(password === "20250916"){
+    document.getElementById("mainTitle").style.display = "none"; // タイトル消す
     showSection("intro");
   } else {
     alert("合言葉が違います");
@@ -236,7 +236,7 @@ function checkFinal(){
   if(document.getElementById("finalAnswer").value === "ねつみずかぜ"){
     document.body.classList.add("fadeOut");
     setTimeout(()=>{
-      window.location.href = "https://宿泊先のURL";
+      window.location.href = "https://lampinc.co.jp/nojiriko/sauna/";
     },1500);
   } else {
     alert("順番をもう一度考えてみてください");
