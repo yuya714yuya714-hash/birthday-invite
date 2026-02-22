@@ -15,6 +15,15 @@ body{
   line-height:1.8;
 }
 .hidden{display:none;}
+
+.fade{
+  opacity:0;
+  transition:opacity 0.8s ease;
+}
+.fade.show{
+  opacity:1;
+}
+
 input{
   padding:10px;
   margin-top:15px;
@@ -36,7 +45,8 @@ button:hover{
 h1{
   margin-bottom:40px;
 }
-  .rotateHint{
+
+.rotateHint{
   margin-top:50px;
   height:200px;
 }
@@ -54,14 +64,30 @@ h1{
   }
 }
 
+/* 鍵獲得メッセージ */
+#message{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:white;
+  color:#111;
+  padding:30px 50px;
+  border-radius:20px;
+  font-size:22px;
+  z-index:1000;
+  opacity:0;
+  transition:opacity 0.6s ease;
+}
+#message.show{
+  opacity:1;
+}
 </style>
-
 </head>
 <body>
 
 <h1>とある未来への招待状</h1>
 
-<!-- 合言葉 -->
 <div id="passwordBox">
 <p>この招待状には、合言葉が必要です。</p>
 <input id="passwordInput" placeholder="合言葉を入力">
@@ -69,8 +95,7 @@ h1{
 <button onclick="checkPassword()">開く</button>
 </div>
 
-<!-- 本編 -->
-<div id="mainContent" class="hidden">
+<div id="mainContent" class="hidden fade">
 
 <h2>第一章</h2>
 
@@ -81,9 +106,9 @@ h1{
 すべて揃ったとき、次の扉が開く。
 </p>
 
-<button onclick="showQ1()">はじめる</button>
+<button id="startBtn" onclick="showQ1()">はじめる</button>
 
-<div id="q1" class="hidden">
+<div id="q1" class="hidden fade">
 <h2>Q1</h2>
 <p>
 形を変えながら、姿を保ち続けるものがある。<br><br>
@@ -94,21 +119,20 @@ h1{
 <button onclick="checkQ1()">答える</button>
 </div>
 
-<div id="q2" class="hidden">
+<div id="q2" class="hidden fade">
 <h2>Q2</h2>
 <p>
 火・太陽・インフル。<br><br>
-これらに共通ものを、ひらがなで答えよ。
+これらに共通するものを、ひらがなで答えよ。
 </p>
 <input id="a2">
 <button onclick="checkQ2()">答える</button>
 </div>
 
-<div id="q3" class="hidden">
+<div id="q3" class="hidden fade">
 <h2>Q3</h2>
-
 <p>
-最後の鍵は、この画面の中に隠されています。<br>
+最後の鍵は、この画面の中に隠されています。
 </p>
 
 <div class="rotateHint">
@@ -120,7 +144,7 @@ h1{
 <button onclick="checkQ3()">答える</button>
 </div>
 
-<div id="final" class="hidden">
+<div id="final" class="hidden fade">
 <h2>最終問題</h2>
 <p>
 三つの鍵は揃った。<br><br>
@@ -135,47 +159,72 @@ h1{
 
 </div>
 
+<div id="message"></div>
+
 <script>
+
+function showSection(nextId,currentId,messageText){
+  const msg = document.getElementById("message");
+  msg.innerText = messageText;
+  msg.classList.add("show");
+
+  setTimeout(()=>{
+    msg.classList.remove("show");
+
+    if(currentId){
+      document.getElementById(currentId).classList.add("hidden");
+    }
+
+    const next = document.getElementById(nextId);
+    next.classList.remove("hidden");
+    setTimeout(()=>{ next.classList.add("show"); },10);
+
+  },1200);
+}
 
 function checkPassword(){
   const password = document.getElementById("passwordInput").value;
   if(password === "20250916"){
     document.getElementById("passwordBox").classList.add("hidden");
-    document.getElementById("mainContent").classList.remove("hidden");
+    const main = document.getElementById("mainContent");
+    main.classList.remove("hidden");
+    setTimeout(()=>{ main.classList.add("show"); },10);
   } else {
     alert("合言葉が違います");
   }
 }
 
 function showQ1(){
-  document.querySelector("#mainContent button").classList.add("hidden");
-  document.getElementById("q1").classList.remove("hidden");
+  document.getElementById("startBtn").classList.add("hidden");
+  const q1 = document.getElementById("q1");
+  q1.classList.remove("hidden");
+  setTimeout(()=>{ q1.classList.add("show"); },10);
 }
 
 function checkQ1(){
   if(document.getElementById("a1").value === "みず"){
-    document.getElementById("q1").classList.add("hidden");
-    document.getElementById("q2").classList.remove("hidden");
+    showSection("q2","q1","第一の鍵を獲得");
   } else alert("ちがいます");
 }
 
 function checkQ2(){
   if(document.getElementById("a2").value === "ねつ"){
-    document.getElementById("q2").classList.add("hidden");
-    document.getElementById("q3").classList.remove("hidden");
+    showSection("q3","q2","第二の鍵を獲得");
   } else alert("ちがいます");
 }
 
 function checkQ3(){
   if(document.getElementById("a3").value === "かぜ"){
-    document.getElementById("q3").classList.add("hidden");
-    document.getElementById("final").classList.remove("hidden");
+    showSection("final","q3","第三の鍵を獲得");
   } else alert("ちがいます");
 }
 
 function checkFinal(){
   if(document.getElementById("finalAnswer").value === "ねつみずかぜ"){
-    window.location.href = "https://宿泊先のURL";
+    showSection(null,null,"すべての鍵が揃った");
+    setTimeout(()=>{
+      window.location.href = "https://宿泊先のURL";
+    },1500);
   } else alert("順番をもう一度考えてみてください");
 }
 
