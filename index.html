@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>とある未来への招待状</title>
 
 <style>
@@ -13,52 +13,47 @@ body{
   text-align:center;
   padding:40px 20px;
   line-height:1.8;
+  transition:opacity 1.5s ease;
 }
 
 .section{
   opacity:0;
-  visibility:hidden;
-  position:absolute;
-  width:100%;
-  left:0;
-  top:120px;
-  transition:opacity 0.6s ease;
+  transform:translateY(10px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+  pointer-events:none;
 }
 
-.section.show{
+.section.active{
   opacity:1;
-  visibility:visible;
-  position:relative;
+  transform:translateY(0);
+  pointer-events:auto;
 }
 
 input{
-  padding:10px;
-  margin-top:20px;
-  border-radius:5px;
-  border:none;
+  padding:14px;
   font-size:16px;
+  border-radius:6px;
+  border:none;
+  width:80%;
+  max-width:300px;
 }
 
 button{
   padding:10px 25px;
-  margin-top:25px;
+  margin-top:20px;
   border:none;
   border-radius:20px;
-  background:white;
+  background:#ffffff;
   color:#111;
   cursor:pointer;
 }
 
-button:hover{
-  opacity:0.8;
-}
+button:hover{opacity:0.8;}
 
-h1{
-  margin-bottom:50px;
-}
+h1{margin-bottom:40px;}
 
 .rotateHint{
-  margin-top:60px;
+  margin-top:50px;
   height:200px;
 }
 
@@ -68,174 +63,165 @@ h1{
   opacity:0;
 }
 
-@media screen and (orientation: landscape){
-  .hiddenWord{
-    opacity:1;
-  }
+@media screen and (orientation: landscape) {
+  .hiddenWord{opacity:1;}
 }
 
-#message{
+/* 鍵ポップ */
+.keyPopup{
   position:fixed;
-  top:50%;
+  top:40%;
   left:50%;
   transform:translate(-50%,-50%);
-  background:white;
+  background:#fff;
   color:#111;
-  padding:40px 60px;
+  padding:20px 40px;
   border-radius:20px;
-  font-size:22px;
-  z-index:9999;
+  font-weight:bold;
   opacity:0;
-  transition:opacity 0.6s ease;
+  transition:opacity 0.5s ease;
+  z-index:10;
 }
 
-#message.show{
+.keyPopup.show{
   opacity:1;
+}
+
+/* 暗転 */
+.fadeOut{
+  opacity:0;
 }
 </style>
 </head>
-
 <body>
 
 <h1>とある未来への招待状</h1>
 
-<!-- 合言葉 -->
-<div id="passwordSection" class="section show">
+<div id="passwordBox" class="section active">
 <p>この招待状には、合言葉が必要です。</p>
 <input id="passwordInput" placeholder="合言葉を入力">
 <br>
 <button onclick="checkPassword()">開く</button>
 </div>
 
-<!-- 第一章 -->
-<div id="introSection" class="section">
+<div id="q1" class="section">
 <h2>第一章</h2>
 <p>
-特別な日にだけ届く「未来へ進むための招待状」。<br><br>
-この招待状を開いたあなたには、<br>
-鍵を集める資格がある。<br><br>
-すべて揃ったとき、次の扉が開く。
+特別な日にだけ届く招待状。<br><br>
+すべての鍵を集めたとき、<br>
+次の扉が開く。
 </p>
-<button onclick="goTo('q1Section')">はじめる</button>
+<button onclick="startQ1()">進む</button>
 </div>
 
-<!-- Q1 -->
-<div id="q1Section" class="section">
+<div id="q1_inner" class="section">
 <h2>Q1</h2>
-<p>
-氷 ⇒ 〇 ⇒ 蒸気<br><br>
-空欄に入るものをひらがなで答えよ。
-</p>
+<p>氷 ⇒ 〇 ⇒ 蒸気</p>
 <input id="a1">
+<br>
 <button onclick="checkQ1()">答える</button>
 </div>
 
-<!-- Q2 -->
-<div id="q2Section" class="section">
+<div id="q2" class="section">
 <h2>Q2</h2>
-<p>
-火・太陽・インフル。<br><br>
-これらに共通するものを、ひらがなで答えよ。
-</p>
+<p>火・太陽・インフル。共通するものは？</p>
 <input id="a2">
+<br>
 <button onclick="checkQ2()">答える</button>
 </div>
 
-<!-- Q3 -->
-<div id="q3Section" class="section">
+<div id="q3" class="section">
 <h2>Q3</h2>
-<p>
-最後の鍵は、この画面の中に隠されている。
-</p>
-
+<p>この画面の中に最後の鍵が隠されている。</p>
 <div class="rotateHint">
   <p class="hiddenWord">かぜ</p>
 </div>
-
 <input id="a3" placeholder="見つけた鍵を入力">
 <br>
 <button onclick="checkQ3()">答える</button>
 </div>
 
-<!-- 最終 -->
-<div id="finalSection" class="section">
+<div id="final" class="section">
 <h2>最終問題</h2>
+<p id="finalText" style="opacity:0; transition:opacity 1s;">
+三つの鍵が揃った。
+</p>
+<div id="finalInner" style="display:none;">
 <p>
-三つの鍵は揃った。<br><br>
-招待状が示す場所では、<br>
-それらを順に体験することになる。<br><br>
-三つの力を、<br>
-あなたが体験したい順に並び替えよ。
+それらを、あなたが体験したい順に並び替えよ。
 </p>
 <input id="finalAnswer">
+<br>
 <button onclick="checkFinal()">答える</button>
 </div>
+</div>
 
-<div id="message"></div>
+<div id="popup" class="keyPopup">鍵を手に入れた</div>
 
 <script>
 
-function switchSection(nextId){
-  const sections = document.querySelectorAll(".section");
-  sections.forEach(sec=>{
-    sec.classList.remove("show");
-  });
-
+function switchSection(current,next){
+  document.getElementById(current).classList.remove("active");
   setTimeout(()=>{
-    document.getElementById(nextId).classList.add("show");
-  },300);
+    document.getElementById(next).classList.add("active");
+  },400);
 }
 
-function goTo(id){
-  switchSection(id);
-}
-
-function showMessage(text,nextSection){
-  const msg = document.getElementById("message");
-  msg.innerText = text;
-  msg.classList.add("show");
-
-  setTimeout(()=>{
-    msg.classList.remove("show");
-    if(nextSection){
-      switchSection(nextSection);
-    }
-  },1200);
+function showPopup(){
+  const popup=document.getElementById("popup");
+  popup.classList.add("show");
+  setTimeout(()=>popup.classList.remove("show"),1200);
 }
 
 function checkPassword(){
-  if(document.getElementById("passwordInput").value === "20250916"){
-    switchSection("introSection");
-  } else {
-    alert("合言葉が違います");
-  }
+  if(passwordInput.value==="20250916"){
+    switchSection("passwordBox","q1");
+  }else alert("合言葉が違います");
+}
+
+function startQ1(){
+  switchSection("q1","q1_inner");
 }
 
 function checkQ1(){
-  if(document.getElementById("a1").value === "みず"){
-    showMessage("第一の鍵を獲得","q2Section");
-  } else alert("ちがいます");
+  if(a1.value==="みず"){
+    showPopup();
+    setTimeout(()=>switchSection("q1_inner","q2"),1200);
+  }else alert("ちがいます");
 }
 
 function checkQ2(){
-  if(document.getElementById("a2").value === "ねつ"){
-    showMessage("第二の鍵を獲得","q3Section");
-  } else alert("ちがいます");
+  if(a2.value==="ねつ"){
+    showPopup();
+    setTimeout(()=>switchSection("q2","q3"),1200);
+  }else alert("ちがいます");
 }
 
 function checkQ3(){
-  if(document.getElementById("a3").value === "かぜ"){
-    showMessage("第三の鍵を獲得","finalSection");
-  } else alert("ちがいます");
+  if(a3.value==="かぜ"){
+    showPopup();
+    setTimeout(()=>{
+      switchSection("q3","final");
+      setTimeout(()=>{
+        document.getElementById("finalText").style.opacity=1;
+      },600);
+      setTimeout(()=>{
+        document.getElementById("finalInner").style.display="block";
+      },1800);
+    },1200);
+  }else alert("ちがいます");
 }
 
 function checkFinal(){
-  if(document.getElementById("finalAnswer").value === "ねつみずかぜ"){
-    showMessage("すべての鍵が揃った",null);
+  if(finalAnswer.value==="ねつみずかぜ"){
+    document.body.classList.add("fadeOut");
+    setTimeout(()=>{
+      alert("扉が開く…");
+    },1200);
     setTimeout(()=>{
       window.location.href="https://宿泊先のURL";
-    },1500);
-  } else alert("順番をもう一度考えてみてください");
+    },2500);
+  }else alert("順番をもう一度考えてみてください");
 }
 
 </script>
