@@ -11,16 +11,25 @@ body{
   background:#111;
   color:white;
   text-align:center;
-  padding:40px 20px;
+  margin:0;
+  padding:20px 20px 40px 20px;
   line-height:1.8;
   transition:opacity 1.5s ease;
 }
 
+h1{
+  margin:10px 0 25px 0;
+  font-size:22px;
+  letter-spacing:2px;
+}
+
 .section{
   opacity:0;
-  transform:translateY(10px);
+  transform:translateY(5px);
   transition:opacity 0.6s ease, transform 0.6s ease;
   pointer-events:none;
+  max-width:500px;
+  margin:0 auto;
 }
 
 .section.active{
@@ -50,11 +59,9 @@ button{
 
 button:hover{opacity:0.8;}
 
-h1{margin-bottom:40px;}
-
 .rotateHint{
-  margin-top:50px;
-  height:200px;
+  margin-top:40px;
+  height:160px;
 }
 
 .hiddenWord{
@@ -67,7 +74,6 @@ h1{margin-bottom:40px;}
   .hiddenWord{opacity:1;}
 }
 
-/* 鍵ポップ */
 .keyPopup{
   position:fixed;
   top:40%;
@@ -87,16 +93,17 @@ h1{margin-bottom:40px;}
   opacity:1;
 }
 
-/* 暗転 */
 .fadeOut{
   opacity:0;
 }
 </style>
 </head>
+
 <body>
 
 <h1>とある未来への招待状</h1>
 
+<!-- 合言葉 -->
 <div id="passwordBox" class="section active">
 <p>この招待状には、合言葉が必要です。</p>
 <input id="passwordInput" placeholder="合言葉を入力">
@@ -104,35 +111,49 @@ h1{margin-bottom:40px;}
 <button onclick="checkPassword()">開く</button>
 </div>
 
-<div id="q1" class="section">
+<!-- 第一章 -->
+<div id="intro" class="section">
 <h2>第一章</h2>
 <p>
-特別な日にだけ届く招待状。<br><br>
-すべての鍵を集めたとき、<br>
-次の扉が開く。
+特別な日にだけ届く「未来へ進むための招待状」。<br><br>
+この招待状を開いたあなたには、<br>
+鍵を集める資格がある。<br><br>
+すべて揃ったとき、次の扉が開く。
 </p>
-<button onclick="startQ1()">進む</button>
+<button onclick="startGame()">はじめる</button>
 </div>
 
-<div id="q1_inner" class="section">
+<!-- Q1 -->
+<div id="q1" class="section">
 <h2>Q1</h2>
-<p>氷 ⇒ 〇 ⇒ 蒸気</p>
+<p>
+形を変えながら、姿を保ち続けるものがある。<br><br>
+氷 ⇒ 〇 ⇒ 蒸気<br><br>
+空欄に入るものをひらがなで答えよ。
+</p>
 <input id="a1">
 <br>
 <button onclick="checkQ1()">答える</button>
 </div>
 
+<!-- Q2 -->
 <div id="q2" class="section">
 <h2>Q2</h2>
-<p>火・太陽・インフル。共通するものは？</p>
+<p>
+火・太陽・インフル。<br><br>
+これらに共通するものを、ひらがなで答えよ。
+</p>
 <input id="a2">
 <br>
 <button onclick="checkQ2()">答える</button>
 </div>
 
+<!-- Q3 -->
 <div id="q3" class="section">
 <h2>Q3</h2>
-<p>この画面の中に最後の鍵が隠されている。</p>
+<p>
+最後の鍵は、この画面の中に隠されています。
+</p>
 <div class="rotateHint">
   <p class="hiddenWord">かぜ</p>
 </div>
@@ -141,87 +162,85 @@ h1{margin-bottom:40px;}
 <button onclick="checkQ3()">答える</button>
 </div>
 
+<!-- 最終問題 -->
 <div id="final" class="section">
 <h2>最終問題</h2>
-<p id="finalText" style="opacity:0; transition:opacity 1s;">
-三つの鍵が揃った。
-</p>
-<div id="finalInner" style="display:none;">
 <p>
-それらを、あなたが体験したい順に並び替えよ。
+三つの鍵は揃った。<br><br>
+招待状が示す場所では、<br>
+それらを順に体験することになる。<br><br>
+三つの力を、<br>
+あなたが体験したい順に並び替えよ。
 </p>
 <input id="finalAnswer">
 <br>
 <button onclick="checkFinal()">答える</button>
 </div>
-</div>
 
-<div id="popup" class="keyPopup">鍵を手に入れた</div>
+<!-- 鍵ポップアップ -->
+<div id="keyPopup" class="keyPopup"></div>
 
 <script>
 
-function switchSection(current,next){
-  document.getElementById(current).classList.remove("active");
-  setTimeout(()=>{
-    document.getElementById(next).classList.add("active");
-  },400);
+function showSection(id){
+  document.querySelectorAll(".section").forEach(s=>{
+    s.classList.remove("active");
+  });
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
 }
 
-function showPopup(){
-  const popup=document.getElementById("popup");
+function showKey(text, nextSection){
+  const popup = document.getElementById("keyPopup");
+  popup.innerText = text + " の鍵を手に入れた";
   popup.classList.add("show");
-  setTimeout(()=>popup.classList.remove("show"),1200);
+
+  setTimeout(()=>{
+    popup.classList.remove("show");
+    showSection(nextSection);
+  },1500);
 }
 
 function checkPassword(){
-  if(passwordInput.value==="20250916"){
-    switchSection("passwordBox","q1");
-  }else alert("合言葉が違います");
+  const password = document.getElementById("passwordInput").value;
+  if(password === "20250916"){
+    showSection("intro");
+  } else {
+    alert("合言葉が違います");
+  }
 }
 
-function startQ1(){
-  switchSection("q1","q1_inner");
+function startGame(){
+  showSection("q1");
 }
 
 function checkQ1(){
-  if(a1.value==="みず"){
-    showPopup();
-    setTimeout(()=>switchSection("q1_inner","q2"),1200);
-  }else alert("ちがいます");
+  if(document.getElementById("a1").value === "みず"){
+    showKey("水","q2");
+  } else alert("ちがいます");
 }
 
 function checkQ2(){
-  if(a2.value==="ねつ"){
-    showPopup();
-    setTimeout(()=>switchSection("q2","q3"),1200);
-  }else alert("ちがいます");
+  if(document.getElementById("a2").value === "ねつ"){
+    showKey("熱","q3");
+  } else alert("ちがいます");
 }
 
 function checkQ3(){
-  if(a3.value==="かぜ"){
-    showPopup();
-    setTimeout(()=>{
-      switchSection("q3","final");
-      setTimeout(()=>{
-        document.getElementById("finalText").style.opacity=1;
-      },600);
-      setTimeout(()=>{
-        document.getElementById("finalInner").style.display="block";
-      },1800);
-    },1200);
-  }else alert("ちがいます");
+  if(document.getElementById("a3").value === "かぜ"){
+    showKey("風","final");
+  } else alert("ちがいます");
 }
 
 function checkFinal(){
-  if(finalAnswer.value==="ねつみずかぜ"){
+  if(document.getElementById("finalAnswer").value === "ねつみずかぜ"){
     document.body.classList.add("fadeOut");
     setTimeout(()=>{
-      alert("扉が開く…");
-    },1200);
-    setTimeout(()=>{
-      window.location.href="https://宿泊先のURL";
-    },2500);
-  }else alert("順番をもう一度考えてみてください");
+      window.location.href = "https://宿泊先のURL";
+    },1500);
+  } else {
+    alert("順番をもう一度考えてみてください");
+  }
 }
 
 </script>
