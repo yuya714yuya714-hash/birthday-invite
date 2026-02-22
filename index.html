@@ -36,6 +36,24 @@ button:hover{
 h1{
   margin-bottom:40px;
 }
+  .rotateHint{
+  margin-top:50px;
+  height:200px;
+}
+
+.hiddenWord{
+  font-size:28px;
+  letter-spacing:8px;
+  opacity:0;
+}
+
+/* 横向きのときだけ表示 */
+@media screen and (orientation: landscape) {
+  .hiddenWord{
+    opacity:1;
+  }
+}
+
 </style>
 
 </head>
@@ -70,7 +88,7 @@ h1{
 <p>
 形を変えながら、姿を保ち続けるものがある。<br><br>
 氷 ⇒ 〇 ⇒ 蒸気<br><br>
-空欄に入るものをひらがなで答えてください。
+空欄に入るものをひらがなで答えよ。
 </p>
 <input id="a1">
 <button onclick="checkQ1()">答える</button>
@@ -79,8 +97,8 @@ h1{
 <div id="q2" class="hidden">
 <h2>Q2</h2>
 <p>
-火・太陽・サウナ。<br><br>
-これらに共通する力を、ひらがなで答えてください。
+火・太陽・インフル。<br><br>
+これらに共通ものを、ひらがなで答えよ。
 </p>
 <input id="a2">
 <button onclick="checkQ2()">答える</button>
@@ -90,15 +108,12 @@ h1{
 <h2>Q3</h2>
 
 <p>
-この部屋には、もう一つ鍵が隠されています。<br>
-画面を動かして探してください。
+最後の鍵は、この画面の中に隠されています。<br>
 </p>
 
-<div style="height:500px;"></div>
-
-<p style="font-size:24px; letter-spacing:10px;">
-か　ぜ
-</p>
+<div class="rotateHint">
+  <p class="hiddenWord">かぜ</p>
+</div>
 
 <input id="a3" placeholder="見つけた鍵を入力">
 <br>
@@ -112,7 +127,7 @@ h1{
 招待状が示す場所では、<br>
 それらを順に体験することになる。<br><br>
 三つの力を、<br>
-あなたが体験したい順に並び替えてください。
+あなたが体験したい順に並び替えよ。
 </p>
 <input id="finalAnswer">
 <button onclick="checkFinal()">答える</button>
